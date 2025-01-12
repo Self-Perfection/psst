@@ -190,14 +190,12 @@ jobs:
       - name: Move License
         run: mkdir -p ${{runner.workspace}}/pkg/usr/share/doc/psst-gui/; mv .pkg/copyright $_
 
-      - name: Move Package Config
+      - name: Write Package Config
         run: |
-          mkdir -p ${{runner.workspace}}/pkg/
-          cp -r .pkg/DEBIAN $_/
-          sed -i 's/Architecture: amd64/Architecture: ${{ matrix.arch }}/' ${{runner.workspace}}/pkg/DEBIAN/control
-
-      - name: Set Version
-        run: "echo Version: $(git rev-list --count HEAD) >> ${{runner.workspace}}/pkg/DEBIAN/control"
+          mkdir -p ${{runner.workspace}}/pkg/DEBIAN
+          export ARCHITECTURE=${{ matrix.arch }}
+          export VERSION=0.1.0+r"$(git rev-list --count HEAD)"
+          envsubst < .pkg/DEBIAN/control > ${{runner.workspace}}/pkg/DEBIAN/control
 
       - name: Build Package
         run: |
