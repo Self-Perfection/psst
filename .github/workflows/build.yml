@@ -44,6 +44,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Get full history to count number of commits for package version
 
       - name: Setup Rust Cache
         uses: Swatinem/rust-cache@v2
@@ -194,7 +196,7 @@ jobs:
         run: |
           mkdir -p ${{runner.workspace}}/pkg/DEBIAN
           export ARCHITECTURE=${{ matrix.arch }}
-          export VERSION=0.1.0+r"$(git rev-list --count HEAD)"
+          export VERSION=0.1.0."$GITHUB_HEAD_REF"+r"$(git rev-list --count HEAD)"
           envsubst < .pkg/DEBIAN/control > ${{runner.workspace}}/pkg/DEBIAN/control
 
       - name: Build Package
