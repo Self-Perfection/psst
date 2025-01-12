@@ -196,7 +196,7 @@ jobs:
         run: |
           mkdir -p ${{runner.workspace}}/pkg/DEBIAN
           export ARCHITECTURE=${{ matrix.arch }}
-          export VERSION=0.1.0."$GITHUB_HEAD_REF"+r"$(git rev-list --count HEAD)"
+          export VERSION=0.1.0."$(echo GITHUB_HEAD_REF|tr '_/' '-')"+r"$(git rev-list --count HEAD)"-0
           envsubst < .pkg/DEBIAN/control > ${{runner.workspace}}/pkg/DEBIAN/control
 
       - name: Build Package
